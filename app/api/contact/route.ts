@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
@@ -13,23 +14,41 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const { name, email, message } = await request.json();
+  try {
+    const contentType = request.headers.get("content-type") || "";
 
-  const newMessage = await prisma.contact.create({
-    data: {
-      name,
-      email,
-      message,
-    },
-  });
+    let body: Record<string, string> = {};
+    if (contentType.includes("application/json")) {
+      body = await request.json();
+    } else if (contentType.includes("application/x-www-form-urlencoded")) {
+      const formData = await request.formData();
+      formData.forEach((value, key) => {
+        body[key] = value.toString();
+      });
+    }
 
-  return new Response(JSON.stringify(newMessage), {
-    status: 201,
-    headers: {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
-    },
-  });
+    const { name, email, message } = body;
+
+    if (!name || !email || !message) {
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 }
+      );
+    }
+
+    // Log or process form data (example: save to database)
+    console.log("Form submitted:", { name, email, message });
+
+    // Return a success response
+    return NextResponse.json(
+      { success: true, message: "Message sent successfully!" },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error("Error handling form submission:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
 }
