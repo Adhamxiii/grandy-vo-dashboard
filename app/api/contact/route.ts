@@ -45,13 +45,24 @@ export async function POST(request: Request) {
       },
     });
 
-    return NextResponse.json(contact);
+    const response = NextResponse.json(contact);
+
+    // Add CORS headers to allow requests from any origin
+    response.headers.set('Access-Control-Allow-Origin', '*');
+    response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    response.headers.set('Access-Control-Allow-Headers', 'Content-Type');
+
+    return response;
 
   } catch (error) {
     console.error("Error handling form submission:", error);
-    return NextResponse.json(
+    const response = NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }
     );
+
+    // Add CORS headers to error response as well
+    response.headers.set('Access-Control-Allow-Origin', '*');
+    return response;
   }
 }
