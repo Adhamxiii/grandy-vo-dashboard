@@ -1,13 +1,10 @@
 "use client";
 
 import {
-  ArrowLeftOnRectangleIcon,
   FolderIcon,
   HomeIcon,
-  NewspaperIcon,
-  UserCircleIcon,
+  NewspaperIcon
 } from "@heroicons/react/24/outline";
-import { signOut } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -81,7 +78,8 @@ export default function DashboardSidebar() {
             }`}
           >
             <HomeIcon className="h-5 w-5" />
-            <span className="hidden md:inline">About</span> {/* Hide on small screens */}
+            <span className="hidden md:inline">About</span>{" "}
+            {/* Hide on small screens */}
           </Link>
 
           <Link
@@ -93,7 +91,8 @@ export default function DashboardSidebar() {
             }`}
           >
             <FolderIcon className="h-5 w-5" />
-            <span className="hidden md:inline">Projects</span> {/* Hide on small screens */}
+            <span className="hidden md:inline">Projects</span>{" "}
+            {/* Hide on small screens */}
           </Link>
 
           <Link
@@ -105,7 +104,8 @@ export default function DashboardSidebar() {
             }`}
           >
             <NewspaperIcon className="h-5 w-5" />
-            <span className="hidden md:inline">Contact</span> {/* Hide on small screens */}
+            <span className="hidden md:inline">Contact</span>{" "}
+            {/* Hide on small screens */}
           </Link>
         </nav>
       </div>

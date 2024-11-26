@@ -17,8 +17,6 @@ const Projects = ({ initialProjects }: { initialProjects: Project[] }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [projects, setProjects] = useState<Project[]>(initialProjects || []);
   const [editProjectId, setEditProjectId] = useState<string | null>(null);
-  const [dataLoading, setDataLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [newProject, setNewProject] = useState({
     title: "",
     videoUrl: "",
