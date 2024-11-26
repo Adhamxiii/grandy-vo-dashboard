@@ -1,7 +1,6 @@
 import DashboardSidebar from "@/components/Sidebar";
-import "./globals.css";
-import Session from "@/components/providers/Session";
 import { Toaster } from "react-hot-toast";
+import "./globals.css";
 
 export default function DashboardLayout({
   children,
