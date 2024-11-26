@@ -18,6 +18,7 @@ export async function POST(request: Request) {
     const contentType = request.headers.get("content-type") || "";
 
     let body: Record<string, string> = {};
+
     if (contentType.includes("application/json")) {
       body = await request.json();
     } else if (contentType.includes("application/x-www-form-urlencoded")) {
@@ -36,14 +37,16 @@ export async function POST(request: Request) {
       );
     }
 
-    // Log or process form data (example: save to database)
-    console.log("Form submitted:", { name, email, message });
+    const contact = await prisma.contact.create({
+      data: {
+        name,
+        email,
+        message,
+      },
+    });
 
-    // Return a success response
-    return NextResponse.json(
-      { success: true, message: "Message sent successfully!" },
-      { status: 201 }
-    );
+    return NextResponse.json(contact);
+
   } catch (error) {
     console.error("Error handling form submission:", error);
     return NextResponse.json(
