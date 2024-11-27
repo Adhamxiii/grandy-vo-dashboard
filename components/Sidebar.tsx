@@ -15,7 +15,7 @@ export default function DashboardSidebar() {
   return (
     <div className="flex h-screen flex-col justify-between bg-indigo-900">
       <div className="px-4 py-6">
-        <Link href="/dashboard" className="flex items-center gap-2 h-10">
+        <Link href="/" className="flex items-center gap-2 h-10">
           <div className="h-8 w-8 rounded-full bg-indigo-500/20 flex items-center justify-center">
             <span className="text-indigo-200 font-bold text-xl">G</span>
           </div>
