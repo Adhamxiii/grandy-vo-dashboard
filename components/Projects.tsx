@@ -86,7 +86,6 @@ const Projects = ({ initialProjects }: { initialProjects: Project[] }) => {
   };
 
   const deleteProject = async (id: string) => {
-    console.log(id);
     try {
       const response = await fetch(`/api/projects?id=${id}`, {
         method: "DELETE",
