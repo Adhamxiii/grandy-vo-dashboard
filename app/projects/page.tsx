@@ -1,20 +1,31 @@
+"use client";
+
 import Projects from "@/components/Projects";
 import axios from "axios";
+import { useEffect, useState } from "react";
 
-axios.defaults.baseURL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+export default function Page() {
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
-const getProjects = async () => {
-  const res = await axios.get(`/api/projects`);
-  if (!res) {
-    throw new Error("Failed to fetch projects");
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("/api/projects");
+        setProjects(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
   }
-  return res.data;
-};
-export default async function page() {
-  const projects = await getProjects();
-
-  console.log(projects);
 
   return <Projects initialProjects={projects} />;
 }
