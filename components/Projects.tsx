@@ -15,6 +15,7 @@ interface Project {
 
 const Projects = ({ initialProjects }: { initialProjects: Project[] }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [projects, setProjects] = useState<Project[]>(initialProjects || []);
   const [editProjectId, setEditProjectId] = useState<string | null>(null);
   const [newProject, setNewProject] = useState({
@@ -43,43 +44,45 @@ const Projects = ({ initialProjects }: { initialProjects: Project[] }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
 
-    if (editProjectId) {
-      try {
-        const response = await fetch(`/api/projects?id=${editProjectId}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(newProject),
-        });
-        if (!response.ok) throw new Error("Failed to update project");
-        toast.success("Project is added");
-        const updatedProject = await response.json();
+    try {
+      const response = editProjectId
+        ? await fetch(`/api/projects?id=${editProjectId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(newProject),
+          })
+        : await fetch("/api/projects", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(newProject),
+          });
+
+      if (!response.ok) throw new Error("Failed to save project");
+
+      const savedProject = await response.json();
+
+      if (editProjectId) {
         setProjects((prev) =>
           prev.map((project) =>
-            project.id === editProjectId ? updatedProject : project
+            project.id === editProjectId ? savedProject : project
           )
         );
-      } catch (error) {
-        console.error(error);
+        toast.success("Project updated successfully!");
+      } else {
+        setProjects((prev) => [...prev, savedProject]);
+        toast.success("Project added successfully!");
       }
-    } else {
-      try {
-        const response = await fetch("/api/projects", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(newProject),
-        });
-        if (!response.ok) throw new Error("Failed to add project");
-        const createdProject = await response.json();
-        setProjects((prev) => [...prev, createdProject]);
-      } catch (error) {
-        console.error(error);
-      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong.");
+    } finally {
+      setIsLoading(false);
+      setIsOpen(false);
+      setNewProject({ title: "", videoUrl: "", duration: "", description: "" });
+      setEditProjectId(null);
     }
-
-    setIsOpen(false);
-    setNewProject({ title: "", videoUrl: "", duration: "", description: "" });
-    setEditProjectId(null);
   };
 
   const deleteProject = async (id: string) => {
@@ -93,6 +96,7 @@ const Projects = ({ initialProjects }: { initialProjects: Project[] }) => {
       toast.success("Project is deleted");
     } catch (error) {
       console.error(error);
+      toast.error("Failed to delete project.");
     }
   };
 
@@ -309,9 +313,18 @@ const Projects = ({ initialProjects }: { initialProjects: Project[] }) => {
                     <div className="mt-5 sm:mt-6 sm:flex sm:flex-row-reverse">
                       <button
                         type="submit"
-                        className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm"
+                        disabled={isLoading}
+                        className={`inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm ${
+                          isLoading
+                            ? "bg-indigo-400 cursor-not-allowed"
+                            : "bg-indigo-600 hover:bg-indigo-700"
+                        }`}
                       >
-                        {editProjectId ? "Update" : "Add"}
+                        {isLoading
+                          ? "Saving..."
+                          : editProjectId
+                          ? "Update"
+                          : "Add"}
                       </button>
                       <button
                         type="button"

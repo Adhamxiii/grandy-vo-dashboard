@@ -2,6 +2,11 @@ import DashboardSidebar from "@/components/Sidebar";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
 
+export const metadata = {
+  title: "Dashboard",
+  description: "Dashboard page",
+};
+
 export default function DashboardLayout({
   children,
 }: {

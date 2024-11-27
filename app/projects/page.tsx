@@ -2,7 +2,9 @@ import Projects from "@/components/Projects";
 import axios from "axios";
 
 const getProjects = async () => {
-  const res = await axios.get("https://grandy-vo-dashboard.vercel.app/api/projects");
+  const res = await axios.get(
+    "https://grandy-vo-dashboard.vercel.app/api/projects"
+  );
   if (!res) {
     throw new Error("Failed to fetch projects");
   }
