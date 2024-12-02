@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Origin": "http://localhost:3000",
   "Access-Control-Allow-Methods": "GET, POST, PUT, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
